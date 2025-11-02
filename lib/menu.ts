@@ -3,12 +3,12 @@ export const items = {
     {
       title: "Dashboard",
       url: "/",
-      icon: LayoutDashboard,
+      icon: "LayoutDashboard",
     },
     {
       title: "Master Data",
       url: "#",
-      icon: Database,
+      icon: "Database",
     },
   ],
 };
