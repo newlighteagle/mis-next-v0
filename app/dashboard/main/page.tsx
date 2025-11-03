@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import ScoreCard from "@/components/cards/score_card/ScoreCard";
+import Link from "next/link";
 
 export default function MainDashboardPage() {
   const [region, setRegion] = useState("All District");
@@ -86,7 +87,9 @@ export default function MainDashboardPage() {
       {/* 📊 Dashboard Cards */}
       <div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-4 gap-4">
         <ScoreCard type="ics" value={stats.icsCount} />
-        <ScoreCard type="farmers" value={stats.farmers} />
+        <Link href="/data/Farmers" className="block">
+          <ScoreCard type="farmers" value={stats.farmers} />
+        </Link>
         <ScoreCard type="trained" value={stats.trained} />
         <ScoreCard type="certified" value={stats.certified} />
       </div>

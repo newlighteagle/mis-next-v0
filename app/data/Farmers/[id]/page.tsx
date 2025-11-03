@@ -1,5 +1,7 @@
 import { notFound } from "next/navigation";
 import { query } from "@/lib/db";
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -22,7 +24,15 @@ export default async function FarmerDetailPage({ params }: Params) {
     <div className="space-y-4">
       <div>
         <h1 className="text-2xl font-semibold">Farmer Detail</h1>
-        <p className="text-sm text-muted-foreground">ID: {farmer.id}</p>
+        <div className="mt-1 flex items-center gap-2 text-sm text-muted-foreground">
+          <Link
+            href="/data/Farmers"
+            className="inline-flex items-center gap-1 rounded-md border px-2 py-1 hover:bg-muted"
+          >
+            <ArrowLeft className="h-4 w-4" /> Back
+          </Link>
+          <span>ID: {farmer.id}</span>
+        </div>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="rounded-md border p-4">

@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/table";
 import Link from "next/link";
 import { Eye } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 type Farmer = {
   id: string;
@@ -129,7 +130,21 @@ export default function FarmersPage() {
                   <TableCell>{r.name}</TableCell>
                   <TableCell>{r.farmer_id_external ?? "-"}</TableCell>
                   <TableCell>{r.ics ?? "-"}</TableCell>
-                  <TableCell>{r.status ?? "-"}</TableCell>
+                  <TableCell>
+                    {r.status ? (
+                      <Badge
+                        variant={
+                          r.status.toLowerCase() === "registered"
+                            ? "default"
+                            : "secondary"
+                        }
+                      >
+                        {r.status}
+                      </Badge>
+                    ) : (
+                      "-"
+                    )}
+                  </TableCell>
                 </TableRow>
               ))
             )}
