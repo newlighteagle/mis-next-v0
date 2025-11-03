@@ -4,6 +4,7 @@ import {
   ChevronRight,
   Monitor,
   LucideLayoutDashboard,
+  Map,
 } from "lucide-react";
 import {
   Sidebar,
@@ -81,7 +82,7 @@ const AppSidebar = () => {
                     </SidebarMenuItem>
                     <SidebarMenuItem>
                       <SidebarMenuButton asChild>
-                        <Link href="/#">
+                        <Link href="/data/Farmers">
                           <FarmerIcon />
                           <span>Farmers</span>
                         </Link>
@@ -90,7 +91,7 @@ const AppSidebar = () => {
                     <SidebarMenuItem>
                       <SidebarMenuButton asChild>
                         <Link href="/#">
-                          <Monitor />
+                          <Map />
                           <span>Land Parcel</span>
                         </Link>
                       </SidebarMenuButton>
@@ -131,8 +132,8 @@ const AppSidebar = () => {
                   <SidebarMenu>
                     <SidebarMenuItem>
                       <SidebarMenuButton asChild>
-                        <Link href="/#">
-                          <Monitor />
+                        <Link href="/data/Farmers">
+                          <FarmerIcon />
                           <span>Farmers</span>
                         </Link>
                       </SidebarMenuButton>
@@ -140,7 +141,7 @@ const AppSidebar = () => {
                     <SidebarMenuItem>
                       <SidebarMenuButton asChild>
                         <Link href="/#">
-                          <Monitor />
+                          <Map />
                           <span>Land Parcel</span>
                         </Link>
                       </SidebarMenuButton>

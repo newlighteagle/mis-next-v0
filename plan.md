@@ -116,3 +116,51 @@
   # PGPORT=5432
   ```
 - Install dependency: `npm i pg`
+
+### 12) Fitur Berikutnya: Data Management – Farmers
+
+#### Tujuan
+
+- Menyediakan halaman manajemen data petani dengan tabel, pencarian, filter, sort, dan pagination.
+
+#### Ruang Lingkup
+
+- Halaman: `app/dashboard/farmers/page.tsx`
+- Sidebar: arahkan menu Farmers ke route di atas
+- API: `app/api/farmers/route.ts` (GET) dengan query params: `page`, `pageSize`, `q` (search), `sortBy`, `sortDir`, opsional filter `region`/`ics` bila tersedia di data
+- DB: tabel `farmers` (disarankan) atau view yang relevan, minimal kolom: `id`, `name`, `ics`, `region`, `phone` (opsional), `created_at`
+
+#### UX Teknis
+
+- Table responsive, kolom minimal: Name, ICS, Region, (opsional) Phone, Created
+- Controls: Search (debounced), page size, pagination, sort by kolom (Name, ICS, Region, Created)
+- States: loading skeleton, empty state, error state
+
+#### API Kontrak (contoh respons)
+
+```json
+{
+  "data": [
+    {
+      "id": "...",
+      "name": "John Doe",
+      "ics": "KBM",
+      "region": "Kampar",
+      "phone": null,
+      "created_at": "2025-11-03T00:00:00Z"
+    }
+  ],
+  "page": 1,
+  "pageSize": 10,
+  "total": 123
+}
+```
+
+#### Checklist Fitur Farmers
+
+- [ ] Sidebar: link ke `/dashboard/farmers`
+- [ ] API `GET /api/farmers` dengan pagination/sort/search
+- [ ] Halaman `Farmers` dengan tabel dan kontrol
+- [ ] Integrasi fetch ke API dan state management
+- [ ] Loading/empty/error states
+- [ ] (Opsional) Filter Region/ICS jika data tersedia
