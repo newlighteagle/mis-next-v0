@@ -1,4 +1,4 @@
-import { Pool } from "pg";
+import { Pool, type QueryResult, type QueryResultRow } from "pg";
 
 let pool: Pool | null = null;
 
@@ -36,10 +36,13 @@ function getPool(): Pool {
   return pool;
 }
 
-export async function query<T = unknown>(text: string, params?: unknown[]) {
+export async function query<T extends QueryResultRow = QueryResultRow>(
+  text: string,
+  params?: unknown[]
+): Promise<QueryResult<T>> {
   const client = await getPool().connect();
   try {
-    const result = await client.query<T>(text, params);
+    const result = await client.query<T>(text, params as any);
     return result;
   } finally {
     client.release();

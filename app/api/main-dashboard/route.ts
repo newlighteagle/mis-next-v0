@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { query, type MainDashboardRow } from "@/lib/db";
 
+export const runtime = "nodejs";
+
 type Stats = {
   icsCount: number;
   farmers: number;
@@ -28,9 +30,10 @@ export async function GET(req: Request) {
 
   try {
     // Native SQL – fetch all rows from main_dashboard
-    const { rows } = await query<MainDashboardRow>(
-      `select name, region, farmers, trained, certified from main_dashboard`
-    );
+    const { rows }: { rows: MainDashboardRow[] } =
+      await query<MainDashboardRow>(
+        `select name, region, farmers, trained, certified from main_dashboard`
+      );
 
     const regions = Array.from(
       new Set(["All District", ...rows.map((r) => r.region)])
