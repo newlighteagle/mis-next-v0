@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Building2,
   User,
@@ -47,21 +49,21 @@ export default function ScoreCard({
   const Icon = attr.icon;
 
   return (
-    <Card className="flex flex-row items-center gap-6 p-6 hover:bg-muted/20 transition-colors">
-      {/* ICON BESAR DI KIRI */}
+    <Card className="flex flex-row items-center gap-6 p-6 hover:bg-muted/30 transition-colors duration-300 rounded-xl shadow-sm">
+      {/* 🏢 ICON BESAR DI KIRI */}
       <Icon className={`size-16 ${attr.color} flex-shrink-0`} />
 
-      {/* KONTEN DI KANAN */}
+      {/* 📊 KONTEN DI KANAN */}
       <div className="flex flex-col justify-center">
         <p className="text-sm text-muted-foreground">{attr.title}</p>
         <h2 className="text-3xl font-semibold tabular-nums">{value}</h2>
 
-        <div className="flex items-center gap-1 font-medium text-sm mt-1">
+        <div className="flex items-center gap-1 font-medium text-sm mt-1 text-muted-foreground">
           <span>{trendText}</span>
           <TrendingUp className="size-4" />
         </div>
 
-        <p className="text-muted-foreground text-sm">{footerText}</p>
+        <p className="text-xs text-muted-foreground mt-1">{footerText}</p>
       </div>
     </Card>
   );
