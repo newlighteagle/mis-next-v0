@@ -1,0 +1,11 @@
+<!-- farmer-flat.svg -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+  <!-- hat -->
+  <path d="M2 9c0-1.657 4-3 10-3s10 1.343 10 3v1H2V9z" />
+  <!-- head -->
+  <circle cx="12" cy="13" r="2.2" />
+  <!-- body -->
+  <path d="M7.5 18c.6-1.2 1.9-2 4.5-2s3.9.8 4.5 2H7.5z" />
+  <!-- plant (simple leaf) -->
+  <path d="M17 14.2c0 0 1.8-1.2 2.2-3 .3-1.2-1.2-1.6-2-1 .6-.1 1.3.2 1.1.9-.3 1-.9 1.9-1.3 2.1z" />
+</svg>

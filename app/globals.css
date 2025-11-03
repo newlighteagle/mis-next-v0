@@ -6,8 +6,9 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-roboto-condensed);
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -45,6 +46,157 @@
 
 :root {
   --radius: 0.625rem;
+
+  /* Base colors */
+  --background: oklch(1 0.01 160); /* hampir putih murni */
+  --foreground: oklch(0.2 0.01 160); /* teks abu gelap lembut */
+
+  /* Card & popover */
+  --card: oklch(0.996 0.005 160);
+  --card-foreground: oklch(0.2 0.01 160);
+  --popover: oklch(0.998 0.005 160);
+  --popover-foreground: oklch(0.2 0.01 160);
+
+  /* Primary – hijau sangat lembut, fresh tapi subtle */
+  --primary: oklch(0.78 0.09 150);
+  --primary-foreground: oklch(0.995 0.005 160);
+
+  /* Secondary – abu keputihan dengan sedikit hijau */
+  --secondary: oklch(0.97 0.007 160);
+  --secondary-foreground: oklch(0.25 0.015 160);
+
+  /* Muted & accent */
+  --muted: oklch(0.975 0.006 160);
+  --muted-foreground: oklch(0.55 0.01 160);
+  --accent: oklch(0.975 0.007 160);
+  --accent-foreground: oklch(0.25 0.015 160);
+
+  /* Destructive – lembut tapi kontras */
+  --destructive: oklch(0.62 0.17 25);
+  --destructive-foreground: oklch(0.995 0.005 160);
+
+  /* Border & input – hampir putih dengan bayangan halus */
+  --border: oklch(0.94 0.006 160);
+  --input: oklch(0.94 0.006 160);
+  --ring: oklch(0.8 0.02 160);
+
+  /* 📊 Chart palette (light mode) */
+  --chart-1: oklch(0.72 0.14 150);
+  --chart-2: oklch(0.75 0.13 100);
+  --chart-3: oklch(0.78 0.12 200);
+  --chart-4: oklch(0.8 0.11 50);
+  --chart-5: oklch(0.73 0.12 280);
+  --chart-6: oklch(0.76 0.13 340);
+  --chart-7: oklch(0.78 0.12 20);
+  --chart-8: oklch(0.8 0.12 260);
+  --chart-9: oklch(0.77 0.13 180);
+  --chart-10: oklch(0.74 0.13 120);
+
+  /* 🗺️ Map palette (vivid, high contrast for light bg) */
+  --map-1: oklch(0.55 0.25 150);
+  --map-2: oklch(0.6 0.25 90);
+  --map-3: oklch(0.65 0.25 50);
+  --map-4: oklch(0.6 0.28 20);
+  --map-5: oklch(0.58 0.26 10);
+  --map-6: oklch(0.6 0.28 300);
+  --map-7: oklch(0.63 0.28 260);
+  --map-8: oklch(0.68 0.26 210);
+  --map-9: oklch(0.65 0.27 180);
+  --map-10: oklch(0.6 0.26 120);
+
+  /* Sidebar */
+  --sidebar: oklch(0.996 0.005 160);
+  --sidebar-foreground: oklch(0.2 0.01 160);
+  --sidebar-primary: oklch(0.78 0.09 150);
+  --sidebar-primary-foreground: oklch(0.995 0.005 160);
+  --sidebar-accent: oklch(0.97 0.007 160);
+  --sidebar-accent-foreground: oklch(0.25 0.015 160);
+  --sidebar-border: oklch(0.94 0.006 160);
+  --sidebar-ring: oklch(0.8 0.02 160);
+}
+
+.dark {
+  /* 🌑 Base background & text */
+  --background: oklch(0.18 0.14 150); /* hijau tua pekat (#062f16) */
+  --foreground: oklch(0.985 0 0); /* putih */
+
+  /* 🪄 Surface elements */
+  --card: oklch(0.22 0.14 150); /* sedikit lebih terang dari bg */
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.22 0.14 150);
+  --popover-foreground: oklch(0.985 0 0);
+
+  /* 💚 Primary (hijau terang kontras, emerald vibrant) */
+  --primary: oklch(0.75 0.22 145); /* hijau segar menyala (#00e676) */
+  --primary-foreground: oklch(0.18 0.14 150);
+
+  /* 🌿 Secondary / muted / accent */
+  --secondary: oklch(0.27 0.13 150); /* hijau sedang gelap */
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.27 0.13 150);
+  --muted-foreground: oklch(0.72 0.06 150);
+  --accent: oklch(0.33 0.14 150); /* hijau sedikit lebih terang */
+  --accent-foreground: oklch(0.985 0 0);
+
+  /* 🔥 Destructive (tetap merah agar kontras) */
+  --destructive: oklch(0.7 0.19 22.2);
+  --destructive-foreground: oklch(0.985 0 0);
+
+  /* ⚙️ Borders & focus rings */
+  --border: oklch(0.3 0.12 150 / 0.25);
+  --input: oklch(0.3 0.12 150 / 0.35);
+  --ring: oklch(0.55 0.18 150); /* hijau terang untuk fokus */
+
+  /* 📊 Chart palette (harmonis tapi bervariasi) */
+  --chart-1: oklch(0.7 0.2 150); /* teal green */
+  --chart-2: oklch(0.75 0.2 100); /* spring green */
+  --chart-3: oklch(0.8 0.18 180); /* sky blue */
+  --chart-4: oklch(0.78 0.18 60); /* warm yellow */
+  --chart-5: oklch(0.72 0.19 200); /* cyan blue */
+  --chart-6: oklch(0.74 0.21 280); /* violet */
+  --chart-7: oklch(0.76 0.19 340); /* soft pink-red */
+  --chart-8: oklch(0.73 0.2 20); /* coral red */
+  --chart-9: oklch(0.78 0.17 260); /* lavender blue */
+  --chart-10: oklch(0.74 0.19 120); /* soft green */
+
+  /* 🗺️ Map palette (high contrast, full color for categorical layers) */
+  --map-1: oklch(0.65 0.3 150); /* strong emerald green */
+  --map-2: oklch(0.7 0.32 80); /* bright yellow-green */
+  --map-3: oklch(0.68 0.31 40); /* vivid orange-yellow */
+  --map-4: oklch(0.62 0.33 20); /* deep red-orange */
+  --map-5: oklch(0.6 0.3 10); /* intense red */
+  --map-6: oklch(0.67 0.32 300); /* magenta-purple */
+  --map-7: oklch(0.7 0.3 260); /* strong violet-blue */
+  --map-8: oklch(0.72 0.3 220); /* bold azure blue */
+  --map-9: oklch(0.7 0.3 180); /* cyan-teal */
+  --map-10: oklch(0.68 0.32 120); /* vivid green */
+
+  /* 🧭 Sidebar */
+  --sidebar: oklch(0.22 0.14 150);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.75 0.22 145);
+  --sidebar-primary-foreground: oklch(0.18 0.14 150);
+  --sidebar-accent: oklch(0.33 0.14 150);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(0.3 0.12 150 / 0.25);
+  --sidebar-ring: oklch(0.55 0.18 150);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* ==================================== */
+/* ============  ORIGINAL  ============ */
+/* ==================================== */
+/*
+:root {
+  --radius: 0.625rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
@@ -77,7 +229,6 @@
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
 }
-
 .dark {
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
@@ -111,12 +262,4 @@
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
 }
-
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
-}
+*/

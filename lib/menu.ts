@@ -1,14 +1,17 @@
+import { LayoutDashboard, Database } from "lucide-react";
 export const items = {
   mainMenu: [
     {
       title: "Dashboard",
       url: "/",
-      icon: "LayoutDashboard",
+      icon: LayoutDashboard,
+      defaultOpen: true,
     },
     {
       title: "Master Data",
       url: "#",
-      icon: "Database",
+      icon: Database,
+      defaultOpen: false,
     },
   ],
 };
