@@ -47,6 +47,7 @@ export default function ScoreCard({
 }: ScoreCardProps) {
   const attr = attrList[type];
   const Icon = attr.icon;
+  const formattedValue = new Intl.NumberFormat(undefined).format(value);
 
   return (
     <Card className="flex flex-row items-center gap-6 p-6 hover:bg-muted/30 transition-colors duration-300 rounded-xl shadow-sm">
@@ -56,7 +57,9 @@ export default function ScoreCard({
       {/* 📊 KONTEN DI KANAN */}
       <div className="flex flex-col justify-center">
         <p className="text-sm text-muted-foreground">{attr.title}</p>
-        <h2 className="text-3xl font-semibold tabular-nums">{value}</h2>
+        <h2 className="text-3xl font-semibold tabular-nums">
+          {formattedValue}
+        </h2>
 
         <div className="flex items-center gap-1 font-medium text-sm mt-1 text-muted-foreground">
           <span>{trendText}</span>

@@ -20,6 +20,39 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## Database Setup (Postgres / Neon)
+
+1. Install dependency:
+
+```bash
+npm i pg
+```
+
+2. Create a `.env.local` in the project root with the following variables:
+
+```dotenv
+PGHOST=ep-old-glade-a1igghil-pooler.ap-southeast-1.aws.neon.tech
+PGDATABASE=neondb
+PGUSER=neondb_owner
+PGPASSWORD=npg_ipqjSC62MsHc
+PGSSLMODE=require
+PGCHANNELBINDING=require
+# Optional
+# PGPORT=5432
+```
+
+3. Start dev server:
+
+```bash
+npm run dev
+```
+
+The dashboard page queries `/api/main-dashboard` using native SQL:
+
+```sql
+select name, region, farmers, trained, certified from main_dashboard;
+```
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:

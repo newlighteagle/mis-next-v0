@@ -1,28 +1,52 @@
 "use client";
 
-import { useState } from "react";
-import {
-  regions,
-  getICSByRegion,
-  getICSStats,
-  getRegionStats,
-} from "@/lib/main-dashboard";
+import { useEffect, useMemo, useState } from "react";
 import ScoreCard from "@/components/cards/score_card/ScoreCard";
 
 export default function MainDashboardPage() {
   const [region, setRegion] = useState("All District");
   const [ics, setICS] = useState("All ICS");
+  const [regions, setRegions] = useState<string[]>(["All District"]);
+  const [icsOptions, setIcsOptions] = useState<string[]>([]);
+  const [stats, setStats] = useState({
+    icsCount: 0,
+    farmers: 0,
+    trained: 0,
+    certified: 0,
+  });
 
-  const icsOptions = getICSByRegion(region);
-  const stats =
-    ics === "All ICS"
-      ? getRegionStats(region)
-      : getICSStats(ics) || {
-          icsCount: 0,
-          farmers: 0,
-          trained: 0,
-          certified: 0,
-        };
+  const qs = useMemo(
+    () => new URLSearchParams({ region, ics }).toString(),
+    [region, ics]
+  );
+
+  useEffect(() => {
+    let cancelled = false;
+    async function load() {
+      try {
+        const res = await fetch(`/api/main-dashboard?${qs}`, {
+          cache: "no-store",
+        });
+        if (!res.ok) throw new Error("Failed to load dashboard data");
+        const data = await res.json();
+        if (cancelled) return;
+        setRegions(data.regions ?? ["All District"]);
+        setIcsOptions(data.icsOptions ?? []);
+        setStats(
+          data.stats ?? { icsCount: 0, farmers: 0, trained: 0, certified: 0 }
+        );
+      } catch (_) {
+        if (!cancelled) {
+          setIcsOptions([]);
+          setStats({ icsCount: 0, farmers: 0, trained: 0, certified: 0 });
+        }
+      }
+    }
+    load();
+    return () => {
+      cancelled = true;
+    };
+  }, [qs]);
 
   return (
     <div className="space-y-6">
