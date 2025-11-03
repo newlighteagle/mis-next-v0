@@ -4,12 +4,66 @@ import { useEffect, useRef, useState } from "react";
 import maplibregl, { Map } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 
-type Props = { farmerId: string };
+type EdgeCoords = Record<string, string>;
+type Props = {
+  farmerId: string;
+  onSnapshot?: (payload: { dataUrl: string; coords: EdgeCoords }) => void;
+};
 
-export default function FarmerParcelsMap({ farmerId }: Props) {
+export default function FarmerParcelsMap({ farmerId, onSnapshot }: Props) {
   const mapRef = useRef<Map | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [basemap, setBasemap] = useState<"hybrid" | "road">("hybrid");
+  const [coords, setCoords] = useState<EdgeCoords>({});
+
+  function formatLngLat(lng: number, lat: number) {
+    return `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+  }
+
+  function updateEdgeCoords(map: Map) {
+    const b = map.getBounds();
+    const nw = b.getNorthWest();
+    const ne = b.getNorthEast();
+    const se = b.getSouthEast();
+    const sw = b.getSouthWest();
+    const topCenter = { lng: (nw.lng + ne.lng) / 2, lat: nw.lat };
+    const rightCenter = { lng: ne.lng, lat: (ne.lat + se.lat) / 2 };
+    const bottomCenter = { lng: (sw.lng + se.lng) / 2, lat: se.lat };
+    const leftCenter = { lng: nw.lng, lat: (nw.lat + sw.lat) / 2 };
+
+    setCoords({
+      TL: formatLngLat(nw.lng, nw.lat),
+      TC: formatLngLat(topCenter.lng, topCenter.lat),
+      TR: formatLngLat(ne.lng, ne.lat),
+      RC: formatLngLat(rightCenter.lng, rightCenter.lat),
+      BR: formatLngLat(se.lng, se.lat),
+      BC: formatLngLat(bottomCenter.lng, bottomCenter.lat),
+      BL: formatLngLat(sw.lng, sw.lat),
+      LC: formatLngLat(leftCenter.lng, leftCenter.lat),
+    });
+  }
+
+  function getEdgeCoords(map: Map) {
+    const b = map.getBounds();
+    const nw = b.getNorthWest();
+    const ne = b.getNorthEast();
+    const se = b.getSouthEast();
+    const sw = b.getSouthWest();
+    const topCenter = { lng: (nw.lng + ne.lng) / 2, lat: nw.lat };
+    const rightCenter = { lng: ne.lng, lat: (ne.lat + se.lat) / 2 };
+    const bottomCenter = { lng: (sw.lng + se.lng) / 2, lat: se.lat };
+    const leftCenter = { lng: nw.lng, lat: (nw.lat + sw.lat) / 2 };
+    return {
+      TL: formatLngLat(nw.lng, nw.lat),
+      TC: formatLngLat(topCenter.lng, topCenter.lat),
+      TR: formatLngLat(ne.lng, ne.lat),
+      RC: formatLngLat(rightCenter.lng, rightCenter.lat),
+      BR: formatLngLat(se.lng, se.lat),
+      BC: formatLngLat(bottomCenter.lng, bottomCenter.lat),
+      BL: formatLngLat(sw.lng, sw.lat),
+      LC: formatLngLat(leftCenter.lng, leftCenter.lat),
+    } as EdgeCoords;
+  }
 
   function applyBasemap(map: Map, which: "hybrid" | "road") {
     const sourceId = "basemap-src";
@@ -57,6 +111,41 @@ export default function FarmerParcelsMap({ farmerId }: Props) {
     );
   }
 
+  function addTemporaryOSMBasemap(map: Map) {
+    const sourceId = "osm-temp-src";
+    const layerId = "osm-temp-lyr";
+    if (map.getLayer(layerId)) map.removeLayer(layerId);
+    if (map.getSource(sourceId)) map.removeSource(sourceId);
+    const mtKey = process.env.NEXT_PUBLIC_MAPTILER_KEY;
+    const useMapTiler = typeof mtKey === "string" && mtKey.length > 0;
+    const tiles = useMapTiler
+      ? [
+          `https://api.maptiler.com/tiles/satellite-v2/{z}/{x}/{y}.jpg?key=${mtKey}`,
+        ]
+      : ["https://tile.openstreetmap.org/{z}/{x}/{y}.png"]; // fallback
+    const tileSize = useMapTiler ? 512 : 256;
+
+    map.addSource(sourceId, {
+      type: "raster",
+      tiles,
+      tileSize,
+      attribution: useMapTiler
+        ? "© MapTiler © OpenStreetMap contributors"
+        : "© OpenStreetMap contributors",
+    } as any);
+    const layers = map.getStyle().layers || [];
+    const firstLayerId = layers.length > 0 ? layers[0].id : undefined;
+    map.addLayer(
+      {
+        id: layerId,
+        type: "raster",
+        source: sourceId,
+      },
+      firstLayerId
+    );
+    return { sourceId, layerId };
+  }
+
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return;
     const map = new maplibregl.Map({
@@ -64,9 +153,11 @@ export default function FarmerParcelsMap({ farmerId }: Props) {
       style: { version: 8, sources: {}, layers: [] },
       center: [101.05, 0.55],
       zoom: 10,
+      preserveDrawingBuffer: true,
     } as any);
     map.addControl(new maplibregl.NavigationControl({ showCompass: false }));
     mapRef.current = map;
+    map.on("moveend", () => updateEdgeCoords(map));
 
     return () => {
       map.remove();
@@ -134,6 +225,43 @@ export default function FarmerParcelsMap({ farmerId }: Props) {
         if (bbox) {
           map.fitBounds(bbox, { padding: 24, duration: 0 });
         }
+        updateEdgeCoords(map);
+
+        // Give the map a tick to render, then snapshot canvas if requested
+        setTimeout(() => {
+          try {
+            if (onSnapshot && mapRef.current) {
+              const mapNow = mapRef.current;
+              // Hide google base and add temporary OSM with CORS for snapshot
+              const baseId = "basemap-lyr";
+              const hadBase = !!mapNow.getLayer(baseId);
+              let prevVis: any = undefined;
+              if (hadBase) {
+                // @ts-ignore
+                prevVis = mapNow.getLayoutProperty(baseId, "visibility");
+                mapNow.setLayoutProperty(baseId, "visibility", "none");
+              }
+              const { sourceId, layerId } = addTemporaryOSMBasemap(mapNow);
+              mapNow.once("idle", () => {
+                try {
+                  const url = mapNow.getCanvas().toDataURL("image/png");
+                  const snapCoords = getEdgeCoords(mapNow);
+                  onSnapshot({ dataUrl: url, coords: snapCoords });
+                } catch {}
+                // cleanup osm temp and restore google base
+                if (mapNow.getLayer(layerId)) mapNow.removeLayer(layerId);
+                if (mapNow.getSource(sourceId)) mapNow.removeSource(sourceId);
+                if (hadBase) {
+                  mapNow.setLayoutProperty(
+                    baseId,
+                    "visibility",
+                    prevVis || "visible"
+                  );
+                }
+              });
+            }
+          } catch {}
+        }, 200);
       } catch (_) {}
     };
 
@@ -166,6 +294,37 @@ export default function FarmerParcelsMap({ farmerId }: Props) {
         >
           Road
         </button>
+      </div>
+      {/* Edge coordinate labels (corners + mid-edges) */}
+      <div className="pointer-events-none absolute inset-0 z-10 text-[10px] leading-tight">
+        {/* Top */}
+        <div className="absolute left-1 top-1 bg-background/70 px-1 rounded">
+          {coords.TL}
+        </div>
+        <div className="absolute left-1/2 -translate-x-1/2 top-1 bg-background/70 px-1 rounded">
+          {coords.TC}
+        </div>
+        <div className="absolute right-1 top-1 bg-background/70 px-1 rounded">
+          {coords.TR}
+        </div>
+        {/* Right center */}
+        <div className="absolute right-1 top-1/2 -translate-y-1/2 bg-background/70 px-1 rounded text-right">
+          {coords.RC}
+        </div>
+        {/* Bottom */}
+        <div className="absolute left-1 bottom-1 bg-background/70 px-1 rounded">
+          {coords.BL}
+        </div>
+        <div className="absolute left-1/2 -translate-x-1/2 bottom-1 bg-background/70 px-1 rounded">
+          {coords.BC}
+        </div>
+        <div className="absolute right-1 bottom-1 bg-background/70 px-1 rounded">
+          {coords.BR}
+        </div>
+        {/* Left center */}
+        <div className="absolute left-1 top-1/2 -translate-y-1/2 bg-background/70 px-1 rounded">
+          {coords.LC}
+        </div>
       </div>
       <div ref={containerRef} className="h-full w-full" />
     </div>
