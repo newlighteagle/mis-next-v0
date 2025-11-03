@@ -1,5 +1,5 @@
-const Page = () => {
-  return <div className="">Page</div>;
-};
+import { redirect } from "next/navigation";
 
-export default Page;
+export default function HomePage() {
+  redirect("/dashboard/main");
+}
