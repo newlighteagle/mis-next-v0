@@ -1,0 +1,68 @@
+import {
+  Building2,
+  User,
+  GraduationCap,
+  Award,
+  TrendingUp,
+} from "lucide-react";
+import { Card } from "@/components/ui/card";
+
+const attrList = {
+  ics: {
+    title: "ICS",
+    icon: Building2,
+    color: "text-green-500",
+  },
+  farmers: {
+    title: "Farmers",
+    icon: User,
+    color: "text-emerald-500",
+  },
+  trained: {
+    title: "Trained Farmers",
+    icon: GraduationCap,
+    color: "text-amber-500",
+  },
+  certified: {
+    title: "Certified Farmers",
+    icon: Award,
+    color: "text-sky-500",
+  },
+} as const;
+
+type ScoreCardProps = {
+  type: keyof typeof attrList;
+  value?: number;
+  trendText?: string;
+  footerText?: string;
+};
+
+export default function ScoreCard({
+  type,
+  value = 0,
+  trendText = "Trending up this month",
+  footerText = "Data updated in the last 6 months",
+}: ScoreCardProps) {
+  const attr = attrList[type];
+  const Icon = attr.icon;
+
+  return (
+    <Card className="flex flex-row items-center gap-6 p-6 hover:bg-muted/20 transition-colors">
+      {/* ICON BESAR DI KIRI */}
+      <Icon className={`size-16 ${attr.color} flex-shrink-0`} />
+
+      {/* KONTEN DI KANAN */}
+      <div className="flex flex-col justify-center">
+        <p className="text-sm text-muted-foreground">{attr.title}</p>
+        <h2 className="text-3xl font-semibold tabular-nums">{value}</h2>
+
+        <div className="flex items-center gap-1 font-medium text-sm mt-1">
+          <span>{trendText}</span>
+          <TrendingUp className="size-4" />
+        </div>
+
+        <p className="text-muted-foreground text-sm">{footerText}</p>
+      </div>
+    </Card>
+  );
+}
